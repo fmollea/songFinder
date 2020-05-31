@@ -5,8 +5,10 @@ import org.junit.Before
 import org.junit.Rule
 import org.mockito.Mock
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.mosh.songfinder.coroutine.TestContextProvider
 import com.mosh.songfinder.coroutine.TestCoroutineRule
+import com.mosh.songfinder.presentation.viewmodels.SongViewModel.SongViewState
 import org.mockito.MockitoAnnotations
 import java.util.*
 
@@ -33,7 +35,7 @@ class SongViewModelTest {
             repository,
             TestContextProvider()
         ).apply {
-            getStateLiveData().observerForever(viewStateObserver)
+            getStateLiveData().observeForever(viewStateObserver)
         }
     }
 }
