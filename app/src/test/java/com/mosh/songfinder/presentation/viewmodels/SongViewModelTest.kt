@@ -2,21 +2,37 @@ package com.mosh.songfinder.presentation.viewmodels
 
 import com.mosh.songfinder.data.repository.SongRepository
 import org.junit.Before
-import org.junit.runner.RunWith
+import org.junit.Rule
 import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.mosh.songfinder.coroutine.TestCoroutineRule
+import org.mockito.MockitoAnnotations
+import java.util.*
 
-@RunWith(MockitoJUnitRunner::class)
 class SongViewModelTest {
+
+    @get:Rule
+    private val instantTaskExecutorRule =  InstantTaskExecutorRule()
+
+    @get:Rule
+    private val testCoroutineRule = TestCoroutineRule()
 
     @Mock
     private lateinit var repository: SongRepository
 
+    @Mock
+    private lateinit var viewStateObserver : Observer<SongViewState>
+
     private lateinit var viewModel: SongViewModel
 
     @Before
-    fun before() {
-        viewModel = SongViewModel(repository)
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        viewModel = SongViewModel(
+            repository,
+            TestContextProvider()
+        ).apply {
+            getStateLiveData().observerForever(viewStateObserver)
+        }
     }
-
 }
