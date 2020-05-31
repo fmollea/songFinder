@@ -1,7 +1,8 @@
-package com.mosh.songfinder
+package com.mosh.songfinder.presentation.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.mosh.songfinder.R
 
 class MainActivity : AppCompatActivity() {
 
