@@ -5,6 +5,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.mockito.Mock
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.mosh.songfinder.coroutine.TestContextProvider
 import com.mosh.songfinder.coroutine.TestCoroutineRule
 import org.mockito.MockitoAnnotations
 import java.util.*
