@@ -42,10 +42,11 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation 'com.google.dagger:dagger:2.24'
     kapt 'com.google.dagger:dagger-compiler:2.24'
+    testImplementation 'org.mockito:mockito-inline:3.3.0'
     testImplementation 'junit:junit:4.13'
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
     testImplementation 'org.mockito:mockito-core:3.3.0'
-    androidTestImplementation "androidx.arch.core:core-testing:$core_testing"
+    testImplementation "androidx.arch.core:core-testing:$core_testing"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

@@ -1,5 +1,6 @@
 package com.mosh.songfinder.presentation.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,7 @@ class SongViewModel(
     }
 
     private val stateLiveData = MutableLiveData<SongViewState>()
-    fun getStateLiveData() = stateLiveData
+    fun getStateLiveData(): LiveData<SongViewState> = stateLiveData
 
     fun getSongsFromServer(term: String) {
         stateLiveData.value = SongViewState.Loading
