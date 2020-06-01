@@ -8,5 +8,9 @@ import retrofit2.http.Query
 interface SongApi {
 
     @GET("search")
-    suspend fun getSongsFromServer(@Query("term") term: String, @Query("limit") limit: Int = 20): Response<SongsResponse>
+    suspend fun getSongsFromServer(
+        @Query("term") term: String,
+        @Query("mediaType") mediaType: String = "music",
+        @Query("limit") limit: Int = 20
+    ): Response<SongsResponse>
 }
