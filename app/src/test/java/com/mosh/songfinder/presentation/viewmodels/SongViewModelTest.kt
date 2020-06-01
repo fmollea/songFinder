@@ -9,8 +9,10 @@ import androidx.lifecycle.Observer
 import com.mosh.songfinder.coroutine.TestContextProvider
 import com.mosh.songfinder.coroutine.TestCoroutineRule
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel.SongViewState
+import org.junit.Test
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import java.util.*
 
 class SongViewModelTest {
 
@@ -36,6 +38,34 @@ class SongViewModelTest {
             TestContextProvider()
         ).apply {
             getStateLiveData().observeForever(viewStateObserver)
+        }
+    }
+
+    @Test
+    fun `test get songs from server success`() {
+        testCoroutineRule.runBlockingTest {
+            val data = Any()
+            val term = "term"
+
+            `when`(repository.getSongsFromServer(term)).thenReturn(data)
+            viewModel.getSongsFromServer(term)
+
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.Success(data))
+        }
+    }
+
+    @Test
+    fun `test get songs from server fail`() {
+        testCoroutineRule.runBlockingTest {
+            val error = Error()
+            val term = "term"
+
+            `when`(repository.getSongsFromServer(term)).thenReturn(error)
+            viewModel.getSongsFromServer(term)
+
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.Error(error))
         }
     }
 }
