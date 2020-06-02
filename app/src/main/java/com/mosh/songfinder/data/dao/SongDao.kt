@@ -20,5 +20,5 @@ interface SongDao {
     fun getAll(): LiveData<List<SongEntity>>
 
     @Query("SELECT * FROM song_db WHERE search_id = :id")
-    fun getAllByCollectionId(id: Int): LiveData<List<SongEntity>>
+    fun getAllBySearchId(id: Int): LiveData<List<SongEntity>>
 }
