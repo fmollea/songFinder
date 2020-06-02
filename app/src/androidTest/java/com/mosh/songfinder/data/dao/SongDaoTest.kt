@@ -71,7 +71,7 @@ class SongDaoTest {
             songDao.insertOrUpdate(song)
         }
 
-        val list: List<Song>? = LiveDataTestUtil.getValue(songDao.getByCollectionId(COLLECTION_ID))
+        val list: List<Song>? = LiveDataTestUtil.getValue(songDao.getAllByCollectionId(COLLECTION_ID))
         Assert.assertEquals(5, list!!.size)
     }
 
