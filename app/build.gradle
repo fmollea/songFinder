@@ -48,5 +48,9 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.3.0'
     testImplementation "androidx.arch.core:core-testing:$core_testing"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation "android.arch.core:core-testing:1.2.0"
+    annotationProcessor "android.arch.lifecycle:compiler:1.2.0"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'androidx.room:room-runtime:2.2.5'
+    annotationProcessor 'androidx.room:room-compiler:2.2.5'
 }
