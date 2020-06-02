@@ -1,4 +1,4 @@
-package com.mosh.songfinder.coroutine
+package com.mosh.songfinder.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
