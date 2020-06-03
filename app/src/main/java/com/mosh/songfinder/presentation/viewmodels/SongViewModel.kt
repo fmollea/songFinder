@@ -41,11 +41,3 @@ class SongViewModel(
         data class Success(val data: List<Song>) : SongViewState()
     }
 }
-
-/*
-fun insertOrUpdate(item: Shopping) = CoroutineScope(Dispatchers.Main).launch {
-        repository.insertOrUpdate(item)
-    }
-
-    fun getAllShoppingItems() = repository.getAllShoppingItems()
- */

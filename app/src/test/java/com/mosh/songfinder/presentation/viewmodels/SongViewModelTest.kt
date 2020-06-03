@@ -4,7 +4,9 @@ import com.mosh.songfinder.data.repository.SongRepository
 import org.junit.Before
 import org.mockito.Mock
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.mosh.songfinder.data.dao.entity.SongEntity
 import com.mosh.songfinder.utils.TestContextProvider
 import com.mosh.songfinder.utils.TestCoroutineRule
 import com.mosh.songfinder.data.services.data.SongsResponse
@@ -15,6 +17,7 @@ import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
+@Suppress("UNCHECKED_CAST")
 class SongViewModelTest {
 
     @get:Rule
@@ -68,6 +71,21 @@ class SongViewModelTest {
 
             verify(viewStateObserver).onChanged(SongViewState.Loading)
             verify(viewStateObserver).onChanged(SongViewState.Error(error))
+        }
+    }
+
+    @Test
+    fun `test get songs from data base succes`() {
+        testCoroutineRule.runBlockingTest {
+            val data = mock(LiveData::class.java) as LiveData<List<SongEntity>>
+            val idSearch = 1
+
+            `when`(repository.getSongsFromDB(idSearch)).thenReturn(data)
+            viewModel.getSongsFromDB(idSearch)
+
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.Success(
+                data.value?.toListSongs() ?: emptyList()))
         }
     }
 }
