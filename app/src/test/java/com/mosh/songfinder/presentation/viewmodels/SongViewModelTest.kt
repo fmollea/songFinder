@@ -76,7 +76,7 @@ class SongViewModelTest {
     }
 
     @Test
-    fun `test get songs from data base succes with data empty`() {
+    fun `test get songs from data base succes`() {
         testCoroutineRule.runBlockingTest {
             val data = mock(LiveData::class.java) as LiveData<List<SongEntity>>
             val idSearch = 1
@@ -87,7 +87,6 @@ class SongViewModelTest {
 
             verify(viewStateObserver).onChanged(SongViewState.Loading)
             verify(viewStateObserver).onChanged(SongViewState.Success(resulQuery))
-            Assert.assertTrue(resulQuery.isEmpty())
         }
     }
 }
