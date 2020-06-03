@@ -52,7 +52,8 @@ class SongViewModelTest {
             viewModel.getSongsFromServer(term)
 
             verify(viewStateObserver).onChanged(SongViewState.Loading)
-            verify(viewStateObserver).onChanged(SongViewState.Success(data))
+            verify(viewStateObserver).onChanged(SongViewState.Success(
+                data.body()?.toListSongs() ?: emptyList()))
         }
     }
 

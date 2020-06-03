@@ -8,5 +8,21 @@ data class SongsResponse(
     @SerializedName("resultCount")
     val resultCount: Int,
     @SerializedName("results")
-    val songs: List<Song>
-)
+    val songs: List<Result>
+) {
+    fun toListSongs() = songs.map { item ->
+        Song(
+            item.collectionId,
+            item.artistName,
+            item.collectionName,
+            item.previewUrl,
+            item.artworkUrl100,
+            item.collectionPrice,
+            item.trackPrice,
+            item.trackTimeMillis,
+            item.currency,
+            item.primaryGenreName,
+            item.isStreamable
+        )
+    }
+}

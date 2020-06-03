@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mosh.songfinder.data.repository.SongRepository
+import com.mosh.songfinder.domain.Song
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -27,7 +28,9 @@ class SongViewModel(
             val data = withContext(contextProvider.IO) {
                 repository.getSongsFromServer(term)
             }
-            stateLiveData.value = SongViewState.Success(data)
+            stateLiveData.value = SongViewState.Success(
+                data.body()?.toListSongs() ?: emptyList()
+            )
         }
     }
 
@@ -35,6 +38,14 @@ class SongViewModel(
     sealed class SongViewState {
         object Loading : SongViewState()
         data class Error(val throwable: Throwable) : SongViewState()
-        data class Success(val data: Any) : SongViewState()
+        data class Success(val data: List<Song>) : SongViewState()
     }
 }
+
+/*
+fun insertOrUpdate(item: Shopping) = CoroutineScope(Dispatchers.Main).launch {
+        repository.insertOrUpdate(item)
+    }
+
+    fun getAllShoppingItems() = repository.getAllShoppingItems()
+ */
