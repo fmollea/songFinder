@@ -11,6 +11,7 @@ import com.mosh.songfinder.utils.TestContextProvider
 import com.mosh.songfinder.utils.TestCoroutineRule
 import com.mosh.songfinder.data.services.data.SongsResponse
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel.SongViewState
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
@@ -75,17 +76,18 @@ class SongViewModelTest {
     }
 
     @Test
-    fun `test get songs from data base succes`() {
+    fun `test get songs from data base succes with data empty`() {
         testCoroutineRule.runBlockingTest {
             val data = mock(LiveData::class.java) as LiveData<List<SongEntity>>
             val idSearch = 1
 
-            `when`(repository.getSongsFromDB(idSearch)).thenReturn(data)
+            `when`(repository.getAllBySearchId(idSearch)).thenReturn(data)
             viewModel.getSongsFromDB(idSearch)
+            val resulQuery = data.value?.map { item -> item.toSong() } ?: emptyList()
 
             verify(viewStateObserver).onChanged(SongViewState.Loading)
-            verify(viewStateObserver).onChanged(SongViewState.Success(
-                data.value?.toListSongs() ?: emptyList()))
+            verify(viewStateObserver).onChanged(SongViewState.Success(resulQuery))
+            Assert.assertTrue(resulQuery.isEmpty())
         }
     }
 }

@@ -3,6 +3,7 @@ package com.mosh.songfinder.data.dao.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.mosh.songfinder.domain.Song
 
 @Entity(tableName = "song_db")
 data class SongEntity(
@@ -33,4 +34,7 @@ data class SongEntity(
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
+
+    fun toSong() = Song(collectionId, artistName, collectionName, previewUrl, artworkUrl100, collectionPrice,
+        trackPrice, trackTimeMillis, currency, primaryGenreName, isStreamable)
 }
