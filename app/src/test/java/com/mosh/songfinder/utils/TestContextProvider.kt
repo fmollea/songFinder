@@ -1,4 +1,4 @@
-package com.mosh.songfinder.coroutine
+package com.mosh.songfinder.utils
 
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
 import kotlinx.coroutines.Dispatchers
