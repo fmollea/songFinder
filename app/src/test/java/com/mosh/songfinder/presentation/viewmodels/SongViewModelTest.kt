@@ -10,14 +10,16 @@ import com.mosh.songfinder.data.dao.entity.SongEntity
 import com.mosh.songfinder.utils.TestContextProvider
 import com.mosh.songfinder.utils.TestCoroutineRule
 import com.mosh.songfinder.data.services.data.SongsResponse
+import com.mosh.songfinder.domain.Song
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel.SongViewState
-import org.junit.Assert
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
+@ExperimentalCoroutinesApi
 @Suppress("UNCHECKED_CAST")
 class SongViewModelTest {
 
@@ -55,7 +57,7 @@ class SongViewModelTest {
             `when`(repository.getSongsFromServer(term)).thenReturn(data)
             viewModel.getSongsFromServer(term)
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
             verify(viewStateObserver).onChanged(SongViewState.Success(
                 data.body()?.toListSongs() ?: emptyList()))
         }
@@ -70,7 +72,8 @@ class SongViewModelTest {
             `when`(repository.getSongsFromServer(term)).thenThrow(error)
             viewModel.getSongsFromServer(term)
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
             verify(viewStateObserver).onChanged(SongViewState.Error(error))
         }
     }
@@ -85,8 +88,23 @@ class SongViewModelTest {
             viewModel.getSongsFromDB(idSearch)
             val resulQuery = data.value?.map { item -> item.toSong() } ?: emptyList()
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
             verify(viewStateObserver).onChanged(SongViewState.Success(resulQuery))
+        }
+    }
+
+    @Test
+    fun `test insert songs to data base`() {
+        testCoroutineRule.runBlockingTest {
+            val songs = mock(List::class.java) as List<Song>
+            val song = mock(Song::class.java)
+            val idSearch = 1
+
+            viewModel.insertSongToDB(songs)
+            verify(repository).insertOrUpdate(song.toEntity(idSearch))
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
+
         }
     }
 }

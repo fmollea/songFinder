@@ -17,6 +17,7 @@ class SongViewModel(
     private val contextProvider: CoroutineContextProvider
 ) : ViewModel() {
     private val handler = CoroutineExceptionHandler { _, exception ->
+        stateLiveData.value = SongViewState.Loading.Hide
         stateLiveData.value = SongViewState.Error(exception)
     }
 
@@ -24,7 +25,7 @@ class SongViewModel(
     fun getStateLiveData(): LiveData<SongViewState> = stateLiveData
 
     fun getSongsFromServer(term: String) {
-        stateLiveData.value = SongViewState.Loading
+        stateLiveData.value = SongViewState.Loading.Show
         viewModelScope.launch(handler) {
             val data = withContext(contextProvider.IO) {
                 repository.getSongsFromServer(term)
@@ -36,11 +37,12 @@ class SongViewModel(
     }
 
     fun getSongsFromDB(idSearch: Int) {
-        stateLiveData.value = SongViewState.Loading
+        stateLiveData.value = SongViewState.Loading.Show
         viewModelScope.launch(handler) {
             val data = withContext(contextProvider.IO) {
                 repository.getAllBySearchId(idSearch)
             }
+            stateLiveData.value = SongViewState.Loading.Hide
             stateLiveData.value = SongViewState.Success(
                 data.value?.map { item -> item.toSong() } ?: emptyList()
             )
@@ -49,7 +51,10 @@ class SongViewModel(
 
 
     sealed class SongViewState {
-        object Loading : SongViewState()
+        sealed class Loading : SongViewState() {
+            object Show : Loading()
+            object Hide : Loading()
+        }
         data class Error(val throwable: Throwable) : SongViewState()
         data class Success(val data: List<Song>) : SongViewState()
     }
