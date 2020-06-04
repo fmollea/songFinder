@@ -118,7 +118,6 @@ class SongViewModelTest {
     @Test
     fun `test get search from data base succes`() {
         testCoroutineRule.runBlockingTest {
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
             val data = mock(LiveData::class.java) as LiveData<List<SearchEntity>>
 
             `when`(repository.getAllSearch()).thenReturn(data)
@@ -135,8 +134,8 @@ class SongViewModelTest {
     fun `test insert search to data base`() {
         testCoroutineRule.runBlockingTest {
             val search = mock(Search::class.java)
-            viewModel.insertSongToDB(search)
-            verify(repository).insertOrUpdateSong(search.toEntity())
+            viewModel.insertSearchToDB(search)
+            verify(repository).insertOrUpdateSearch(search.toSearchEntity())
         }
     }
 }
