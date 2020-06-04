@@ -6,10 +6,12 @@ import org.mockito.Mock
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.mosh.songfinder.data.dao.entity.SearchEntity
 import com.mosh.songfinder.data.dao.entity.SongEntity
 import com.mosh.songfinder.utils.TestContextProvider
-import com.mosh.songfinder.utils.TestCoroutineRule
+import com.mosh.songfinder.utils.TestCoroutineRules
 import com.mosh.songfinder.data.services.data.SongsResponse
+import com.mosh.songfinder.domain.Search
 import com.mosh.songfinder.domain.Song
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel.SongViewState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +29,7 @@ class SongViewModelTest {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val testCoroutineRule = TestCoroutineRule()
+    val testCoroutineRule = TestCoroutineRules()
 
     @Mock
     private lateinit var repository: SongRepository
@@ -84,7 +86,7 @@ class SongViewModelTest {
             val data = mock(LiveData::class.java) as LiveData<List<SongEntity>>
             val idSearch = 1
 
-            `when`(repository.getAllBySearchId(idSearch)).thenReturn(data)
+            `when`(repository.getAllSongBySearchId(idSearch)).thenReturn(data)
             viewModel.getSongsFromDB(idSearch)
             val resulQuery = data.value?.map { item -> item.toSong() } ?: emptyList()
 
@@ -97,14 +99,44 @@ class SongViewModelTest {
     @Test
     fun `test insert songs to data base`() {
         testCoroutineRule.runBlockingTest {
-            val songs = mock(List::class.java) as List<Song>
             val song = mock(Song::class.java)
+            val songs = listOf<Song>(song, song, song)
             val idSearch = 1
 
-            viewModel.insertSongToDB(songs)
-            verify(repository).insertOrUpdate(song.toEntity(idSearch))
+            `when`(song.toEntity(idSearch)).thenReturn(mock(SongEntity::class.java))
+
+            viewModel.insertSongToDB(songs, idSearch)
+            songs.forEach {
+                verify(repository, times(3)).insertOrUpdateSong(it.toEntity(idSearch))
+            }
+
             verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
 
+        }
+    }
+
+    @Test
+    fun `test get search from data base succes`() {
+        testCoroutineRule.runBlockingTest {
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
+            val data = mock(LiveData::class.java) as LiveData<List<SearchEntity>>
+
+            `when`(repository.getAllSearch()).thenReturn(data)
+            viewModel.getSearchsFromDB()
+            val resulQuery = data.value?.map { item -> item.toSearch() } ?: emptyList()
+
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
+            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
+            verify(viewStateObserver).onChanged(SongViewState.SuccessSearch(resulQuery))
+        }
+    }
+
+    @Test
+    fun `test insert search to data base`() {
+        testCoroutineRule.runBlockingTest {
+            val search = mock(Search::class.java)
+            viewModel.insertSongToDB(search)
+            verify(repository).insertOrUpdateSong(search.toEntity())
         }
     }
 }

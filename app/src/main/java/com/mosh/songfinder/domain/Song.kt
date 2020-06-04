@@ -1,5 +1,6 @@
 package com.mosh.songfinder.domain
 
+import com.mosh.songfinder.data.dao.entity.SongEntity
 import java.io.Serializable
 
 data class Song(
@@ -14,4 +15,7 @@ data class Song(
     val currency: String,
     val primaryGenreName: String,
     val isStreamable: Boolean
-) : Serializable
+) : Serializable {
+    fun toEntity(idSearch: Int) = SongEntity(collectionId, idSearch, artistName, collectionName, previewUrl,
+        artworkUrl100, collectionPrice, trackPrice, trackTimeMillis, currency, primaryGenreName, isStreamable)
+}

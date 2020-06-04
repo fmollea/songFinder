@@ -10,9 +10,6 @@ interface SearchDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(songEntity: SearchEntity)
 
-    @Delete
-    suspend fun delete(songEntity: SearchEntity)
-
     @Query("SELECT * FROM search_db WHERE id = :id")
     fun get(id: Int): LiveData<SearchEntity>
 

@@ -53,18 +53,6 @@ class SearchDaoTest {
     }
 
     @Test
-    fun testDeleteASongInDb() {
-        testCoroutineRule.runBlockingTest {
-            val search = SearchEntity(TERM)
-            search.id = 1
-
-            searchDao.insertOrUpdate(search)
-            searchDao.delete(search)
-            Assert.assertNull(LiveDataTestUtil.getValue(searchDao.get(search.id!!)))
-        }
-    }
-
-    @Test
     fun testGetSongsAndEmptyDb() {
         val list: List<SearchEntity>? = LiveDataTestUtil.getValue(searchDao.getAll())
         Assert.assertTrue(list!!.isEmpty())

@@ -8,7 +8,7 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 @ExperimentalCoroutinesApi
-class TestCoroutineRule : TestRule {
+class TestCoroutineRules : TestRule {
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
     private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher)
