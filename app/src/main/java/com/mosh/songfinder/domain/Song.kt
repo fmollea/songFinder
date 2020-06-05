@@ -6,6 +6,7 @@ import java.io.Serializable
 data class Song(
     val collectionId: Int,
     val artistName: String,
+    val trackName: String,
     val collectionName: String,
     val previewUrl: String,
     val artworkUrl100: String,
@@ -16,6 +17,6 @@ data class Song(
     val primaryGenreName: String,
     val isStreamable: Boolean
 ) : Serializable {
-    fun toEntity(idSearch: Int) = SongEntity(collectionId, idSearch, artistName, collectionName, previewUrl,
+    fun toEntity(idSearch: Int) = SongEntity(collectionId, idSearch, artistName, trackName, collectionName, previewUrl,
         artworkUrl100, collectionPrice, trackPrice, trackTimeMillis, currency, primaryGenreName, isStreamable)
 }

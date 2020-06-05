@@ -17,7 +17,6 @@ class SongViewModel(
     private val contextProvider: CoroutineContextProvider
 ) : ViewModel() {
     private val handler = CoroutineExceptionHandler { _, exception ->
-        stateLiveData.value = SongViewState.Loading.Hide
         stateLiveData.value = SongViewState.Error(exception)
     }
 
@@ -25,12 +24,12 @@ class SongViewModel(
     fun getStateLiveData(): LiveData<SongViewState> = stateLiveData
 
     fun getSongsFromServer(term: String) {
-        stateLiveData.value = SongViewState.Loading.Show
+        stateLiveData.value = SongViewState.Loading
         viewModelScope.launch(handler) {
             val data = withContext(contextProvider.IO) {
                 repository.getSongsFromServer(term)
             }
-            stateLiveData.value = SongViewState.Success(
+            stateLiveData.value = SongViewState.SuccessSong(
                 data.body()?.toListSongs() ?: emptyList()
             )
         }
@@ -43,30 +42,27 @@ class SongViewModel(
                     repository.insertOrUpdateSong(it.toEntity(idSearch))
                 }
             }
-            stateLiveData.value = SongViewState.Loading.Hide
         }
     }
 
     fun getSongsFromDB(idSearch: Int) {
-        stateLiveData.value = SongViewState.Loading.Show
+        stateLiveData.value = SongViewState.Loading
         viewModelScope.launch(handler) {
             val data = withContext(contextProvider.IO) {
                 repository.getAllSongBySearchId(idSearch)
             }
-            stateLiveData.value = SongViewState.Loading.Hide
-            stateLiveData.value = SongViewState.Success(
+            stateLiveData.value = SongViewState.SuccessSong(
                 data.value?.map { item -> item.toSong() } ?: emptyList()
             )
         }
     }
     
     fun getSearchsFromDB() {
-        stateLiveData.value = SongViewState.Loading.Show
+        stateLiveData.value = SongViewState.Loading
         viewModelScope.launch(handler) {
             val data = withContext(contextProvider.IO) {
                 repository.getAllSearch()
             }
-            stateLiveData.value = SongViewState.Loading.Hide
             stateLiveData.value = SongViewState.SuccessSearch(
                 data.value?.map { item -> item.toSearch() } ?: emptyList() 
             )
@@ -82,12 +78,9 @@ class SongViewModel(
     }
 
     sealed class SongViewState {
-        sealed class Loading : SongViewState() {
-            object Show : Loading()
-            object Hide : Loading()
-        }
+        object Loading : SongViewState()
         data class Error(val throwable: Throwable) : SongViewState()
-        data class Success(val data: List<Song>) : SongViewState()
+        data class SuccessSong(val data: List<Song>) : SongViewState()
         data class SuccessSearch(val data: List<Search>) : SongViewState()
     }
 }

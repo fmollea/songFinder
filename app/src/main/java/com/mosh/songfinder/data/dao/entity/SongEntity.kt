@@ -13,6 +13,8 @@ data class SongEntity(
     val searchId: Int,
     @ColumnInfo(name = "artist_name")
     val artistName: String,
+    @ColumnInfo(name = "track_name")
+    val trackName: String,
     @ColumnInfo(name = "collection_name")
     val collectionName: String,
     @ColumnInfo(name = "preview_url")
@@ -35,6 +37,6 @@ data class SongEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null
 
-    fun toSong() = Song(collectionId, artistName, collectionName, previewUrl, artworkUrl100, collectionPrice,
+    fun toSong() = Song(collectionId, artistName, trackName, collectionName, previewUrl, artworkUrl100, collectionPrice,
         trackPrice, trackTimeMillis, currency, primaryGenreName, isStreamable)
 }

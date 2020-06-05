@@ -59,8 +59,8 @@ class SongViewModelTest {
             `when`(repository.getSongsFromServer(term)).thenReturn(data)
             viewModel.getSongsFromServer(term)
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
-            verify(viewStateObserver).onChanged(SongViewState.Success(
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.SuccessSong(
                 data.body()?.toListSongs() ?: emptyList()))
         }
     }
@@ -74,8 +74,7 @@ class SongViewModelTest {
             `when`(repository.getSongsFromServer(term)).thenThrow(error)
             viewModel.getSongsFromServer(term)
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
             verify(viewStateObserver).onChanged(SongViewState.Error(error))
         }
     }
@@ -90,9 +89,8 @@ class SongViewModelTest {
             viewModel.getSongsFromDB(idSearch)
             val resulQuery = data.value?.map { item -> item.toSong() } ?: emptyList()
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
-            verify(viewStateObserver).onChanged(SongViewState.Success(resulQuery))
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
+            verify(viewStateObserver).onChanged(SongViewState.SuccessSong(resulQuery))
         }
     }
 
@@ -109,9 +107,6 @@ class SongViewModelTest {
             songs.forEach {
                 verify(repository, times(3)).insertOrUpdateSong(it.toEntity(idSearch))
             }
-
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
-
         }
     }
 
@@ -124,8 +119,7 @@ class SongViewModelTest {
             viewModel.getSearchsFromDB()
             val resulQuery = data.value?.map { item -> item.toSearch() } ?: emptyList()
 
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Show)
-            verify(viewStateObserver).onChanged(SongViewState.Loading.Hide)
+            verify(viewStateObserver).onChanged(SongViewState.Loading)
             verify(viewStateObserver).onChanged(SongViewState.SuccessSearch(resulQuery))
         }
     }

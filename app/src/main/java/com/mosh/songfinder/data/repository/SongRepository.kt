@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SongRepository(
     private val db: AppDataBase
 ) {
-
     private val client = Retrofit.Builder()
         .baseUrl("https://itunes.apple.com/")
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
@@ -27,6 +26,4 @@ class SongRepository(
     suspend fun insertOrUpdateSearch(search: SearchEntity) = db.getSearchDao().insertOrUpdate(search)
 
     fun getAllSearch() = db.getSearchDao().getAll()
-
-
 }

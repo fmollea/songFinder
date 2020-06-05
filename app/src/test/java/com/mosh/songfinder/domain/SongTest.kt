@@ -10,7 +10,7 @@ class SongTest {
 
     @Before
     fun setUp() {
-        data = Song(COLLECTION_ID, ARTIST_NAME, COLLECTION_NAME, PREVIEW_URL, ARTWORKURL_100,
+        data = Song(COLLECTION_ID, ARTIST_NAME, COLLECTION_NAME, TRACK_NAME, PREVIEW_URL, ARTWORKURL_100,
             COLLECTION_PRICE, TRACK_PRICE, TRACK_TIME_MILLIS, CURRENCY, PRIMARY_GENRE_NAME, IS_STREAMABLE)
     }
 
@@ -27,6 +27,11 @@ class SongTest {
     @Test
     fun checkArtistName() {
         Assert.assertEquals(ARTIST_NAME, data.artistName)
+    }
+
+    @Test
+    fun checkTrackName() {
+        Assert.assertEquals(TRACK_NAME, data.trackName)
     }
 
     @Test
@@ -77,6 +82,7 @@ class SongTest {
     companion object {
         const val COLLECTION_ID = 1
         const val ARTIST_NAME = "artistName"
+        const val TRACK_NAME = "trackName"
         const val COLLECTION_NAME = "collection name"
         const val PREVIEW_URL = "previewUrl"
         const val ARTWORKURL_100 = "artUrl"

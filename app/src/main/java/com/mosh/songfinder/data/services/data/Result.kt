@@ -6,11 +6,11 @@ data class Result(
     @SerializedName("artistId")
     val artistId: Int,
     @SerializedName("artistName")
-    val artistName: String,
+    val artistName: String?,
     @SerializedName("artistViewUrl")
     val artistViewUrl: String,
     @SerializedName("artworkUrl100")
-    val artworkUrl100: String,
+    val artworkUrl100: String?,
     @SerializedName("artworkUrl30")
     val artworkUrl30: String,
     @SerializedName("artworkUrl60")
@@ -24,9 +24,9 @@ data class Result(
     @SerializedName("collectionId")
     val collectionId: Int,
     @SerializedName("collectionName")
-    val collectionName: String,
+    val collectionName: String?,
     @SerializedName("collectionPrice")
-    val collectionPrice: Double,
+    val collectionPrice: Double?,
     @SerializedName("collectionViewUrl")
     val collectionViewUrl: String,
     @SerializedName("contentAdvisoryRating")
@@ -46,9 +46,9 @@ data class Result(
     @SerializedName("longDescription")
     val longDescription: String,
     @SerializedName("previewUrl")
-    val previewUrl: String,
+    val previewUrl: String?,
     @SerializedName("primaryGenreName")
-    val primaryGenreName: String,
+    val primaryGenreName: String?,
     @SerializedName("releaseDate")
     val releaseDate: String,
     @SerializedName("shortDescription")
@@ -68,7 +68,7 @@ data class Result(
     @SerializedName("trackNumber")
     val trackNumber: Int,
     @SerializedName("trackPrice")
-    val trackPrice: Double,
+    val trackPrice: Double?,
     @SerializedName("trackTimeMillis")
     val trackTimeMillis: Int,
     @SerializedName("trackViewUrl")
