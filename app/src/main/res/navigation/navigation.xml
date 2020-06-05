@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/songListFragment">
+    <fragment
+        android:id="@+id/songListFragment"
+        android:name="com.mosh.songfinder.presentation.ui.fragments.SongListFragment"
+        android:label="fragment_song_list"
+        tools:layout="@layout/fragment_song_list" >
+        <action
+            android:id="@+id/action_songListFragment_to_searchListFragment"
+            app:destination="@id/searchListFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_songListFragment_to_emptyStateFragment"
+            app:destination="@id/emptyStateFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchListFragment"
+        android:name="com.mosh.songfinder.presentation.ui.fragments.SearchListFragment"
+        android:label="fragment_search_list"
+        tools:layout="@layout/fragment_search_list" >
+        <action
+            android:id="@+id/action_searchListFragment_to_emptyStateFragment"
+            app:destination="@id/emptyStateFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/emptyStateFragment"
+        android:name="com.mosh.songfinder.presentation.ui.fragments.EmptyStateFragment"
+        android:label="fragment_empty_state"
+        tools:layout="@layout/fragment_empty_state" />
+</navigation>
