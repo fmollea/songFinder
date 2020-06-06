@@ -33,6 +33,8 @@ class SongListFragment : Fragment() {
         return binding?.root
     }
 
+    fun getBinding() = binding!!
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -49,8 +51,8 @@ class SongListFragment : Fragment() {
 
 
         adapterSong = SongAdapter(requireActivity().applicationContext, listOf())
-        binding!!.rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
-        binding!!.rvListSongs.adapter = adapterSong
+        getBinding().rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
+        getBinding().rvListSongs.adapter = adapterSong
     }
 
     private fun observeViewModel() {
@@ -70,17 +72,18 @@ class SongListFragment : Fragment() {
     }
 
     private fun showLoading() {
-        binding!!.lottieLoading.visibility = View.VISIBLE
+        getBinding().lottieLoading.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        binding!!.lottieLoading.visibility = View.GONE
+        getBinding().lottieLoading.visibility = View.GONE
     }
 
     private fun drawListSong(list: List<Song>) {
         adapterSong.items = list
         adapterSong.notifyDataSetChanged()
-        binding!!.rvListSongs.visibility = View.VISIBLE
+        getBinding().searchView.visibility = View.VISIBLE
+        getBinding().rvListSongs.visibility = View.VISIBLE
         hideLoading()
     }
 
