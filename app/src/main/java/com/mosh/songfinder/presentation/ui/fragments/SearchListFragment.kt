@@ -19,6 +19,7 @@ import com.mosh.songfinder.presentation.ui.adapters.SongAdapter
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel
 import com.mosh.songfinder.presentation.viewmodels.SongViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
+import com.mosh.songfinder.utils.Utils
 
 class SearchListFragment : Fragment() {
 
@@ -61,7 +62,7 @@ class SearchListFragment : Fragment() {
             when (it) {
                 is SongViewModel.SongViewState.Loading -> showLoading()
                 is SongViewModel.SongViewState.SuccessSearch -> drawListSearch(it.data)
-                is SongViewModel.SongViewState.Error -> navToEmptyState()
+                is SongViewModel.SongViewState.Error -> navToEmptyState(it.throwable)
             }
         }
 
@@ -71,12 +72,11 @@ class SearchListFragment : Fragment() {
     private fun drawListSearch(list: List<Search>) {
         adapterSearch.items = list
         adapterSearch.notifyDataSetChanged()
-        getBinding().searchView.visibility = View.VISIBLE
         getBinding().rvListSearches.visibility = View.VISIBLE
         hideLoading()
     }
 
-    private fun navToEmptyState() {
+    private fun navToEmptyState(e: Throwable) {
         findNavController().navigate(R.id.emptyStateFragment)
     }
 

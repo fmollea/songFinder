@@ -1,10 +1,11 @@
 package com.mosh.songfinder.presentation.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.mosh.songfinder.presentation.ui.adapters.SongAdapter
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel
 import com.mosh.songfinder.presentation.viewmodels.SongViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
+import com.mosh.songfinder.utils.Utils
 
 class SongListFragment : Fragment() {
 
@@ -39,7 +41,6 @@ class SongListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         observeViewModel()
-        viewModel.getSongsFromServer("in+utero")
     }
 
     private fun initView() {
@@ -53,6 +54,26 @@ class SongListFragment : Fragment() {
         adapterSong = SongAdapter(requireActivity().applicationContext, listOf())
         getBinding().rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSongs.adapter = adapterSong
+
+        getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchSongs(query)
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+
+        })
+    }
+
+    private fun searchSongs(query: String?) {
+        query?.let {
+            if (it.isNotEmpty()) {
+                viewModel.getSongsFromServer(Utils.obtainTerm(it))
+            }
+        }
     }
 
     private fun observeViewModel() {
@@ -60,18 +81,23 @@ class SongListFragment : Fragment() {
             when (it) {
                 is SongViewModel.SongViewState.Loading -> showLoading()
                 is SongViewModel.SongViewState.SuccessSong -> drawListSong(it.data)
-                is SongViewModel.SongViewState.Error -> navToEmptyState()
+                is SongViewModel.SongViewState.Error -> navToEmptyState(it.throwable)
             }
         }
 
         viewModel.getStateLiveData().observe(requireActivity(), sonObserver)
     }
 
-    private fun navToEmptyState() {
-        findNavController().navigate(R.id.emptyStateFragment)
+    private fun navToEmptyState(e: Throwable) {
+        if (Utils.isNetworkError(e)) {
+            findNavController().navigate(R.id.searchListFragment)
+        } else {
+            findNavController().navigate(R.id.emptyStateFragment)
+        }
     }
 
     private fun showLoading() {
+        getBinding().rvListSongs.visibility = View.GONE
         getBinding().lottieLoading.visibility = View.VISIBLE
     }
 
@@ -82,7 +108,6 @@ class SongListFragment : Fragment() {
     private fun drawListSong(list: List<Song>) {
         adapterSong.items = list
         adapterSong.notifyDataSetChanged()
-        getBinding().searchView.visibility = View.VISIBLE
         getBinding().rvListSongs.visibility = View.VISIBLE
         hideLoading()
     }

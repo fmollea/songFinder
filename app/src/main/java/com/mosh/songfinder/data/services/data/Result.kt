@@ -64,7 +64,7 @@ data class Result(
     @SerializedName("trackId")
     val trackId: Int,
     @SerializedName("trackName")
-    val trackName: String,
+    val trackName: String?,
     @SerializedName("trackNumber")
     val trackNumber: Int,
     @SerializedName("trackPrice")

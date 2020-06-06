@@ -10,4 +10,6 @@ object Utils {
             false
         }
     }
+
+    fun obtainTerm(query: String) = query.replace(" ", "+")
 }
