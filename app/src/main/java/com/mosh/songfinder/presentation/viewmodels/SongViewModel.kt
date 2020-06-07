@@ -1,9 +1,6 @@
 package com.mosh.songfinder.presentation.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.mosh.songfinder.data.repository.SongRepository
 import com.mosh.songfinder.domain.Search
 import com.mosh.songfinder.domain.Song
@@ -35,21 +32,21 @@ class SongViewModel(
         }
     }
 
-    fun insertSongToDB(songs: List<Song>, idSearch: Int) {
+    fun insertSongToDB(songs: List<Song>, term: String) {
         viewModelScope.launch(handler) {
             withContext(contextProvider.IO) {
                 songs.forEach {
-                    repository.insertOrUpdateSong(it.toEntity(idSearch))
+                    repository.insertOrUpdateSong(it.toEntity(term))
                 }
             }
         }
     }
 
-    fun getSongsFromDB(idSearch: Int) {
+    fun getSongsFromDB(term: String) {
         stateLiveData.value = SongViewState.Loading
         viewModelScope.launch(handler) {
             val data = withContext(contextProvider.IO) {
-                repository.getAllSongBySearchId(idSearch)
+                repository.getAllSongBySearchId(term)
             }
             stateLiveData.value = SongViewState.SuccessSong(
                 data.value?.map { item -> item.toSong() } ?: emptyList()
@@ -57,22 +54,12 @@ class SongViewModel(
         }
     }
     
-    fun getSearchsFromDB() {
-        stateLiveData.value = SongViewState.Loading
-        viewModelScope.launch(handler) {
-            val data = withContext(contextProvider.IO) {
-                repository.getAllSearch()
-            }
-            stateLiveData.value = SongViewState.SuccessSearch(
-                data.value?.map { item -> item.toSearch() } ?: emptyList() 
-            )
-        }
-    }
+    fun getSearchsFromDB() = repository.getAllSearch()
 
     fun insertSearchToDB(search: Search) {
         viewModelScope.launch(handler) {
-            withContext(contextProvider.IO) {
-                repository.insertOrUpdateSearch(search.toSearchEntity())
+            withContext(contextProvider.Main) {
+               repository.insertOrUpdateSearch(search.toSearchEntity())
             }
         }
     }

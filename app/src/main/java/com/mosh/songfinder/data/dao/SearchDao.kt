@@ -8,10 +8,10 @@ import com.mosh.songfinder.data.dao.entity.SearchEntity
 interface SearchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdate(songEntity: SearchEntity)
+    suspend fun insertOrUpdate(searchEntity: SearchEntity) : Long
 
-    @Query("SELECT * FROM search_db WHERE id = :id")
-    fun get(id: Int): LiveData<SearchEntity>
+    @Query("SELECT * FROM search_db WHERE term = :term")
+    fun get(term: String): LiveData<SearchEntity>
 
     @Query("SELECT * FROM search_db")
     fun getAll(): LiveData<List<SearchEntity>>

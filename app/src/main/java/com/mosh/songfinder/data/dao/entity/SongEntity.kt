@@ -2,6 +2,7 @@ package com.mosh.songfinder.data.dao.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.mosh.songfinder.domain.Song
 
@@ -9,8 +10,8 @@ import com.mosh.songfinder.domain.Song
 data class SongEntity(
     @ColumnInfo(name = "collection_id")
     val collectionId: Int,
-    @ColumnInfo(name = "search_id")
-    val searchId: Int,
+    @ColumnInfo(name = "search_term")
+    val searchTerm: String,
     @ColumnInfo(name = "artist_name")
     val artistName: String,
     @ColumnInfo(name = "track_name")
@@ -35,8 +36,10 @@ data class SongEntity(
     val isStreamable: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     var id: Int? = null
 
+    @Ignore
     fun toSong() = Song(collectionId, artistName, trackName, collectionName, previewUrl, artworkUrl100, collectionPrice,
         trackPrice, trackTimeMillis, currency, primaryGenreName, isStreamable)
 }

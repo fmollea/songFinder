@@ -83,10 +83,10 @@ class SongViewModelTest {
     fun `test get songs from data base succes`() {
         testCoroutineRule.runBlockingTest {
             val data = mock(LiveData::class.java) as LiveData<List<SongEntity>>
-            val idSearch = 1
+            val term = "term"
 
-            `when`(repository.getAllSongBySearchId(idSearch)).thenReturn(data)
-            viewModel.getSongsFromDB(idSearch)
+            `when`(repository.getAllSongBySearchId(term)).thenReturn(data)
+            viewModel.getSongsFromDB(term)
             val resulQuery = data.value?.map { item -> item.toSong() } ?: emptyList()
 
             verify(viewStateObserver).onChanged(SongViewState.Loading)
@@ -99,29 +99,23 @@ class SongViewModelTest {
         testCoroutineRule.runBlockingTest {
             val song = mock(Song::class.java)
             val songs = listOf<Song>(song, song, song)
-            val idSearch = 1
+            val term = "term"
 
-            `when`(song.toEntity(idSearch)).thenReturn(mock(SongEntity::class.java))
+            `when`(song.toEntity(term)).thenReturn(mock(SongEntity::class.java))
 
-            viewModel.insertSongToDB(songs, idSearch)
+            viewModel.insertSongToDB(songs, term)
             songs.forEach {
-                verify(repository, times(3)).insertOrUpdateSong(it.toEntity(idSearch))
+                verify(repository, times(3)).insertOrUpdateSong(it.toEntity(term))
             }
         }
     }
 
     @Test
     fun `test get search from data base succes`() {
-        testCoroutineRule.runBlockingTest {
             val data = mock(LiveData::class.java) as LiveData<List<SearchEntity>>
-
             `when`(repository.getAllSearch()).thenReturn(data)
             viewModel.getSearchsFromDB()
-            val resulQuery = data.value?.map { item -> item.toSearch() } ?: emptyList()
-
-            verify(viewStateObserver).onChanged(SongViewState.Loading)
-            verify(viewStateObserver).onChanged(SongViewState.SuccessSearch(resulQuery))
-        }
+            verify(repository).getAllSearch()
     }
 
     @Test

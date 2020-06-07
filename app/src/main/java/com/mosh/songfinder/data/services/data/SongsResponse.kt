@@ -13,7 +13,7 @@ data class SongsResponse(
         Song(
             item.collectionId,
             item.artistName ?: "",
-            item.trackName,
+            item.trackName?: "",
             item.collectionName ?: "",
             item.previewUrl ?: "",
             item.artworkUrl100 ?: "",
