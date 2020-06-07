@@ -17,6 +17,6 @@ data class Song(
     val primaryGenreName: String,
     val isStreamable: Boolean
 ) : Serializable {
-    fun toEntity(idSearch: Int) = SongEntity(collectionId, idSearch, artistName, trackName, collectionName, previewUrl,
+    fun toEntity(term: String) = SongEntity(collectionId, term, artistName, trackName, collectionName, previewUrl,
         artworkUrl100, collectionPrice, trackPrice, trackTimeMillis, currency, primaryGenreName, isStreamable)
 }

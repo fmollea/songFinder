@@ -44,7 +44,7 @@ class SongDaoTest {
     @Test
     fun testInsertorUpdateASongInDb() {
         testCoroutineRule.runBlockingTest {
-            val song = SongEntity(COLLECTION_ID, SEARCH_ID, ARTIST_NAME, COLLECTION_NAME, PREVIEW_URL, ARTWORKURL_100,
+            val song = SongEntity(COLLECTION_ID, TERM, ARTIST_NAME, TRACK_NAME, COLLECTION_NAME, PREVIEW_URL, ARTWORKURL_100,
                 COLLECTION_PRICE, TRACK_PRICE, TRACK_TIME_MILLIS, CURRENCY, PRIMARY_GENRE_NAME, IS_STREAMABLE)
             song.id = 1
 
@@ -57,20 +57,21 @@ class SongDaoTest {
     fun testGetSongsByCollectionId() {
         testCoroutineRule.runBlockingTest {
             for(i in 1..5) {
-                val song = SongEntity(COLLECTION_ID, SEARCH_ID,ARTIST_NAME, COLLECTION_NAME, PREVIEW_URL, ARTWORKURL_100,
+                val song = SongEntity(COLLECTION_ID, TERM, ARTIST_NAME, TRACK_NAME, COLLECTION_NAME, PREVIEW_URL, ARTWORKURL_100,
                     COLLECTION_PRICE, TRACK_PRICE, TRACK_TIME_MILLIS, CURRENCY, PRIMARY_GENRE_NAME, IS_STREAMABLE)
                 songDao.insertOrUpdate(song)
             }
 
-            val list: List<SongEntity>? = LiveDataTestUtil.getValue(songDao.getAllSongBySearchId(SEARCH_ID))
+            val list: List<SongEntity>? = LiveDataTestUtil.getValue(songDao.getAllSongBySearchId(TERM))
             Assert.assertEquals(5, list!!.size)
         }
     }
 
     companion object {
         const val COLLECTION_ID = 1
-        const val SEARCH_ID = 1
+        const val TERM = "term"
         const val ARTIST_NAME = "artistName"
+        const val TRACK_NAME = "trackName"
         const val COLLECTION_NAME = "collection name"
         const val PREVIEW_URL = "previewUrl"
         const val ARTWORKURL_100 = "artUrl"

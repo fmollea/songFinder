@@ -45,10 +45,9 @@ class SearchDaoTest {
     fun testInsertorUpdateASearchInDb() {
         testCoroutineRule.runBlockingTest {
             val search = SearchEntity(TERM)
-            search.id = 1
 
             searchDao.insertOrUpdate(search)
-            Assert.assertEquals(search, LiveDataTestUtil.getValue(searchDao.get(search.id!!)))
+            Assert.assertEquals(search, LiveDataTestUtil.getValue(searchDao.get(search.term)))
         }
     }
 

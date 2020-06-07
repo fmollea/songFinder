@@ -15,11 +15,9 @@ import com.mosh.songfinder.data.repository.SongRepository
 import com.mosh.songfinder.databinding.FragmentSearchListBinding
 import com.mosh.songfinder.domain.Search
 import com.mosh.songfinder.presentation.ui.adapters.SearchAdapter
-import com.mosh.songfinder.presentation.ui.adapters.SongAdapter
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel
 import com.mosh.songfinder.presentation.viewmodels.SongViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
-import com.mosh.songfinder.utils.Utils
 
 class SearchListFragment : Fragment() {
 
@@ -40,19 +38,27 @@ class SearchListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        observeViewModel()
-        viewModel.getSearchsFromDB()
+
     }
 
-    private fun initView() {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
         val db = AppDataBase(requireActivity().applicationContext)
         val repository = SongRepository(db)
         val contextProvider = CoroutineContextProvider()
         val factory = SongViewModelFactory(repository, contextProvider)
         viewModel = ViewModelProviders.of(this, factory).get(SongViewModel::class.java)
 
+        viewModel.getSearchsFromDB().observe(viewLifecycleOwner, Observer {
+            drawListSearch( it.map { item -> item.toSearch() })
+        })
 
-        adapterSearch = SearchAdapter(requireActivity().applicationContext, listOf())
+        observeViewModel()
+    }
+
+    private fun initView() {
+        adapterSearch = SearchAdapter(listOf())
         getBinding().rvListSearches.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSearches.adapter = adapterSearch
     }
@@ -66,7 +72,7 @@ class SearchListFragment : Fragment() {
             }
         }
 
-        viewModel.getStateLiveData().observe(requireActivity(), sonObserver)
+        viewModel.getStateLiveData().observe(viewLifecycleOwner, sonObserver)
     }
 
     private fun drawListSearch(list: List<Search>) {

@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/songListFragment">
+    app:startDestination="@id/searchListFragment">
     <fragment
         android:id="@+id/songListFragment"
         android:name="com.mosh.songfinder.presentation.ui.fragments.SongListFragment"
         android:label="fragment_song_list"
-        tools:layout="@layout/fragment_song_list" >
+        tools:layout="@layout/fragment_song_list"
+        app:startDestination="@id/action_songListFragment_to_searchListFragment">
         <action
             android:id="@+id/action_songListFragment_to_searchListFragment"
             app:destination="@id/searchListFragment"
@@ -30,6 +31,9 @@
             app:destination="@id/emptyStateFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_searchListFragment_to_songListFragment"
+            app:destination="@id/songListFragment" />
     </fragment>
     <fragment
         android:id="@+id/emptyStateFragment"

@@ -14,6 +14,7 @@ import com.mosh.songfinder.R
 import com.mosh.songfinder.data.dao.AppDataBase
 import com.mosh.songfinder.data.repository.SongRepository
 import com.mosh.songfinder.databinding.FragmentSongListBinding
+import com.mosh.songfinder.domain.Search
 import com.mosh.songfinder.domain.Song
 import com.mosh.songfinder.presentation.ui.adapters.SongAdapter
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel
@@ -26,6 +27,7 @@ class SongListFragment : Fragment() {
     private lateinit var viewModel : SongViewModel
     private lateinit var adapterSong : SongAdapter
     private var binding : FragmentSongListBinding? = null
+    fun getBinding() = binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,22 +37,20 @@ class SongListFragment : Fragment() {
         return binding?.root
     }
 
-    fun getBinding() = binding!!
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        val db = AppDataBase(requireActivity().applicationContext)
+        val repository = SongRepository(db)
+        val contextProvider = CoroutineContextProvider()
+        val factory = SongViewModelFactory(repository, contextProvider)
+
+        viewModel = ViewModelProviders.of(this, factory).get(SongViewModel::class.java)
         initView()
         observeViewModel()
     }
 
     private fun initView() {
-        val db = AppDataBase(requireActivity().applicationContext)
-        val repository = SongRepository(db)
-        val contextProvider = CoroutineContextProvider()
-        val factory = SongViewModelFactory(repository, contextProvider)
-        viewModel = ViewModelProviders.of(this, factory).get(SongViewModel::class.java)
-
-
         adapterSong = SongAdapter(requireActivity().applicationContext, listOf())
         getBinding().rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSongs.adapter = adapterSong
@@ -64,16 +64,7 @@ class SongListFragment : Fragment() {
             override fun onQueryTextChange(p0: String?): Boolean {
                 return false
             }
-
         })
-    }
-
-    private fun searchSongs(query: String?) {
-        query?.let {
-            if (it.isNotEmpty()) {
-                viewModel.getSongsFromServer(Utils.obtainTerm(it))
-            }
-        }
     }
 
     private fun observeViewModel() {
@@ -84,15 +75,14 @@ class SongListFragment : Fragment() {
                 is SongViewModel.SongViewState.Error -> navToEmptyState(it.throwable)
             }
         }
-
-        viewModel.getStateLiveData().observe(requireActivity(), sonObserver)
+        viewModel.getStateLiveData().observe(viewLifecycleOwner, sonObserver)
     }
 
-    private fun navToEmptyState(e: Throwable) {
-        if (Utils.isNetworkError(e)) {
-            findNavController().navigate(R.id.searchListFragment)
-        } else {
-            findNavController().navigate(R.id.emptyStateFragment)
+    private fun searchSongs(query: String?) {
+        query?.let {
+            if (it.isNotEmpty()) {
+                viewModel.getSongsFromServer(Utils.obtainTerm(it))
+            }
         }
     }
 
@@ -106,10 +96,29 @@ class SongListFragment : Fragment() {
     }
 
     private fun drawListSong(list: List<Song>) {
+        saveSearch()
         adapterSong.items = list
         adapterSong.notifyDataSetChanged()
-        getBinding().rvListSongs.visibility = View.VISIBLE
         hideLoading()
+        getBinding().rvListSongs.visibility = View.VISIBLE
+    }
+
+    private fun saveSearch() {
+        val query = getBinding().searchView.query.toString()
+        viewModel.insertSearchToDB(Search(query))
+        saveSongs(query)
+    }
+
+    private fun saveSongs(query: String) {
+            viewModel.insertSongToDB(adapterSong.items, query)
+    }
+
+    private fun navToEmptyState(e: Throwable) {
+        if (Utils.isNetworkError(e)) {
+            findNavController().navigate(R.id.searchListFragment)
+        } else {
+            findNavController().navigate(R.id.emptyStateFragment)
+        }
     }
 
     override fun onDestroyView() {
