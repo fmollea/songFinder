@@ -40,6 +40,11 @@ class ErrorStateFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
     companion object {
         private const val DEFAULT = "DEFAULT"
     }

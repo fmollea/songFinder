@@ -40,4 +40,9 @@ class EmptyStateFragment : Fragment() {
             }
         })
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
 }

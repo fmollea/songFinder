@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_songListFragment_to_errorStateFragment"
             app:destination="@id/errorStateFragment" />
+        <action
+            android:id="@+id/action_songListFragment_to_collectionFragment"
+            app:destination="@id/collectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchListFragment"
@@ -60,5 +63,15 @@
         <action
             android:id="@+id/action_emptyStateFragment_to_songListFragment"
             app:destination="@id/songListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionFragment"
+        android:name="com.mosh.songfinder.presentation.ui.fragments.CollectionFragment"
+        android:label="fragment_collection"
+        tools:layout="@layout/fragment_collection" >
+        <argument
+            android:name="idCollection"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 </navigation>
