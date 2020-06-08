@@ -2,6 +2,8 @@ package com.mosh.songfinder.presentation.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.mosh.songfinder.data.repository.CollectionRepository
+import com.mosh.songfinder.data.services.data.CollectionResponse
 import com.mosh.songfinder.utils.TestContextProvider
 import com.mosh.songfinder.utils.TestCoroutineRules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
