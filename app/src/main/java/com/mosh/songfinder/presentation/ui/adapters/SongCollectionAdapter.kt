@@ -23,28 +23,25 @@ class SongCollectionAdapter (
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: SongCollectionViewHolder, position: Int) {
-        var mediaPlayer: MediaPlayer? = MediaPlayer()
+        var mediaPlayer = MediaPlayer()
         val currentItem = items[position]
 
         holder.itemView.tvSongCollection.text = currentItem.trackName
         Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
 
         holder.itemView.ivMediaPlayer.setOnClickListener {
-            mediaPlayer?.let {
-                if (it.isPlaying) {
-                    mediaPlayer?.release()
-                    mediaPlayer = null
-                    Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
-                } else {
-                    mediaPlayer = MediaPlayer().apply {
-                        setAudioStreamType(AudioManager.STREAM_MUSIC)
-                        setDataSource(currentItem.previewUrl)
-                        prepare()
-                        start()
-                    }
-                    Glide.with(context).load(R.drawable.ic_pause)
-                        .into(holder.itemView.ivMediaPlayer)
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
+                Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
+            } else {
+                mediaPlayer = MediaPlayer().apply {
+                    setAudioStreamType(AudioManager.STREAM_MUSIC)
+                    setDataSource(currentItem.previewUrl)
+                    prepare()
+                    start()
                 }
+                Glide.with(context).load(R.drawable.ic_pause)
+                    .into(holder.itemView.ivMediaPlayer)
             }
         }
     }

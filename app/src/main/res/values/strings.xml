@@ -6,4 +6,5 @@
     <string name="searches_not_found">No saved searches yet, do your first search</string>
     <string name="retry">Retry</string>
     <string name="search_history">Search history:</string>
+    <string name="list_of_songs">List of songs</string>
 </resources>

@@ -26,6 +26,7 @@ class SearchListFragment : Fragment() {
     private lateinit var viewModel : SongViewModel
     private lateinit var adapterSearch : SearchAdapter
     private var binding : FragmentSearchListBinding? = null
+    fun getBinding() = binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,8 +35,6 @@ class SearchListFragment : Fragment() {
         binding = FragmentSearchListBinding.inflate(inflater, container, false)
         return binding?.root
     }
-
-    fun getBinding() = binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
