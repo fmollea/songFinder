@@ -6,10 +6,12 @@ import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mosh.songfinder.R
 import com.mosh.songfinder.domain.Song
+import com.mosh.songfinder.utils.Utils
 import kotlinx.android.synthetic.main.item_song_preview_row.view.*
 
 class SongCollectionAdapter (
@@ -35,22 +37,23 @@ class SongCollectionAdapter (
                     mediaPlayer.stop()
                     Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
                 } else {
-                    mediaPlayer = MediaPlayer().apply {
-                        setAudioStreamType(AudioManager.STREAM_MUSIC)
-                        setDataSource(currentItem.previewUrl)
-                        prepare()
-                        start()
+                    if (Utils.isConnected(context)) {
+                        mediaPlayer = MediaPlayer().apply {
+                            setAudioStreamType(AudioManager.STREAM_MUSIC)
+                            setDataSource(currentItem.previewUrl)
+                            prepare()
+                            start()
+                        }
+                        Glide.with(context).load(R.drawable.ic_pause)
+                            .into(holder.itemView.ivMediaPlayer)
+                    } else {
+                        Toast.makeText(context, "Must be connected to the internet", Toast.LENGTH_LONG).show()
                     }
-                    Glide.with(context).load(R.drawable.ic_pause)
-                        .into(holder.itemView.ivMediaPlayer)
                 }
             }
         } else {
             Glide.with(context).load(R.drawable.ic_play_not_available).into(holder.itemView.ivMediaPlayer)
         }
-
-
-
     }
 
     inner class SongCollectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
