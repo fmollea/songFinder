@@ -19,8 +19,6 @@ class SongRepository(
 
     suspend fun getSongsFromServer(term: String) = client.getSongsFromServer(term)
 
-    suspend fun insertOrUpdateSong(item: SongEntity) = db.getSongDao().insertOrUpdate(item)
-
     suspend fun insertOrUpdateSongAll(items: List<SongEntity>) = db.getSongDao().insertOrUpdateAll(items)
 
     suspend fun getAllSongBySearchId(term: String) = db.getSongDao().getAllSongBySearchId(term)
