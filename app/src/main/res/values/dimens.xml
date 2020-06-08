@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dimen_ui_40">40dp</dimen>
-    <dimen name="empty_text_size">18sp</dimen>
+    <dimen name="text_size">18sp</dimen>
     <dimen name="title_size">20sp</dimen>
     <dimen name="body_size">16sp</dimen>
     <dimen name="dimen_ui_8">8dp</dimen>
@@ -9,4 +9,6 @@
     <dimen name="dimen_ui_0">0dp</dimen>
     <dimen name="dimen_ui_75">75dp</dimen>
     <dimen name="dimen_ui_250">250dp</dimen>
+    <dimen name="dimen_ui_150">150dp</dimen>
+    <dimen name="dimen_ui_50">50dp</dimen>
 </resources>
