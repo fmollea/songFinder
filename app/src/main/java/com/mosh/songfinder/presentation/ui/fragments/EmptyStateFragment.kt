@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.mosh.songfinder.databinding.FragmentEmptyStateBinding
+import com.mosh.songfinder.presentation.ui.activities.SongFinderActivity
+import com.mosh.songfinder.utils.Utils
 
 class EmptyStateFragment : Fragment() {
 
@@ -25,13 +28,19 @@ class EmptyStateFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        (requireActivity() as SongFinderActivity).title = "Finder of songs"
 
         getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    val action: NavDirections = EmptyStateFragmentDirections.actionEmptyStateFragmentToSongListFragment(it)
-                    findNavController().navigate(action)
+                if (Utils.isConnected(requireContext())) {
+                    query?.let {
+                        val action: NavDirections = EmptyStateFragmentDirections.actionEmptyStateFragmentToSongListFragment(it)
+                        findNavController().navigate(action)
+                    }
+                } else {
+                    Toast.makeText(context, "Must be connected to the internet", Toast.LENGTH_LONG).show()
                 }
+
                 return true
             }
 

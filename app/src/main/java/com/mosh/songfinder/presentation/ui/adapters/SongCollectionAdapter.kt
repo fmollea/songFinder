@@ -27,23 +27,30 @@ class SongCollectionAdapter (
         val currentItem = items[position]
 
         holder.itemView.tvSongCollection.text = currentItem.trackName
-        Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
+        if (currentItem.isStreamable) {
+            Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
 
-        holder.itemView.ivMediaPlayer.setOnClickListener {
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.stop()
-                Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
-            } else {
-                mediaPlayer = MediaPlayer().apply {
-                    setAudioStreamType(AudioManager.STREAM_MUSIC)
-                    setDataSource(currentItem.previewUrl)
-                    prepare()
-                    start()
+            holder.itemView.ivMediaPlayer.setOnClickListener {
+                if (mediaPlayer.isPlaying) {
+                    mediaPlayer.stop()
+                    Glide.with(context).load(R.drawable.ic_play).into(holder.itemView.ivMediaPlayer)
+                } else {
+                    mediaPlayer = MediaPlayer().apply {
+                        setAudioStreamType(AudioManager.STREAM_MUSIC)
+                        setDataSource(currentItem.previewUrl)
+                        prepare()
+                        start()
+                    }
+                    Glide.with(context).load(R.drawable.ic_pause)
+                        .into(holder.itemView.ivMediaPlayer)
                 }
-                Glide.with(context).load(R.drawable.ic_pause)
-                    .into(holder.itemView.ivMediaPlayer)
             }
+        } else {
+            Glide.with(context).load(R.drawable.ic_play_not_available).into(holder.itemView.ivMediaPlayer)
         }
+
+
+
     }
 
     inner class SongCollectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

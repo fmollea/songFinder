@@ -73,5 +73,8 @@
             android:name="idCollection"
             app:argType="integer"
             android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_collectionFragment_to_errorStateFragment"
+            app:destination="@id/errorStateFragment" />
     </fragment>
 </navigation>

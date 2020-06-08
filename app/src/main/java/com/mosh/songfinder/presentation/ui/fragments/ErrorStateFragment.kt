@@ -9,6 +9,7 @@ import android.widget.SearchView
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import com.mosh.songfinder.databinding.FragmentErrorStateBinding
+import com.mosh.songfinder.presentation.ui.activities.SongFinderActivity
 
 class ErrorStateFragment : Fragment() {
 
@@ -33,6 +34,7 @@ class ErrorStateFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        (requireActivity() as SongFinderActivity).title = "An error ocurred"
 
         getBinding().btRerty.setOnClickListener {
             val action: NavDirections = ErrorStateFragmentDirections.actionErrorStateFragmentToSongListFragment(query)

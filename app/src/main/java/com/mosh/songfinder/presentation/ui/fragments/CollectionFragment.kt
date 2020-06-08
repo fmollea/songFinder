@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -14,11 +15,11 @@ import com.mosh.songfinder.R
 import com.mosh.songfinder.data.repository.CollectionRepository
 import com.mosh.songfinder.databinding.FragmentCollectionBinding
 import com.mosh.songfinder.domain.CollectionSong
+import com.mosh.songfinder.presentation.ui.activities.SongFinderActivity
 import com.mosh.songfinder.presentation.ui.adapters.SongCollectionAdapter
 import com.mosh.songfinder.presentation.viewmodels.CollectionViewModel
 import com.mosh.songfinder.presentation.viewmodels.CollectionViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
-import kotlinx.android.synthetic.main.item_song_row.view.*
 
 class CollectionFragment : Fragment() {
 
@@ -67,6 +68,7 @@ class CollectionFragment : Fragment() {
     }
 
     private fun initView() {
+        (requireActivity() as SongFinderActivity).title = "Album detail"
         adapterCollection = SongCollectionAdapter(requireContext(), listOf())
         getBinding().rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSongs.adapter = adapterCollection
@@ -107,7 +109,7 @@ class CollectionFragment : Fragment() {
     }
 
     private fun navToErrorState(throwable: Throwable) {
-
+        findNavController().navigate(R.id.errorStateFragment)
     }
 
     override fun onDestroyView() {

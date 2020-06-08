@@ -22,6 +22,7 @@ import com.mosh.songfinder.presentation.viewmodels.SongViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
 import com.mosh.songfinder.utils.Utils
 import androidx.navigation.fragment.findNavController
+import com.mosh.songfinder.presentation.ui.activities.SongFinderActivity
 
 class SongListFragment : Fragment() {
 
@@ -60,15 +61,21 @@ class SongListFragment : Fragment() {
     }
 
     private fun initView() {
+        (requireActivity() as SongFinderActivity).title = "List of songs"
         adapterSong = SongAdapter(this, listOf())
         getBinding().rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSongs.adapter = adapterSong
 
         getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(term: String?): Boolean {
-                term?.let {
-                    query = it
-                    searchSongs(query)
+                if (Utils.isConnected(requireContext())) {
+                    term?.let {
+                        query = it
+                        searchSongs(query)
+                    }
+                } else {
+                    Toast.makeText(context, "Must be connected to the internet", Toast.LENGTH_LONG).show()
+                    navToSearchList()
                 }
                 return true
             }

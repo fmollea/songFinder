@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavDirections
@@ -16,10 +17,12 @@ import com.mosh.songfinder.data.dao.AppDataBase
 import com.mosh.songfinder.data.repository.SongRepository
 import com.mosh.songfinder.databinding.FragmentSearchListBinding
 import com.mosh.songfinder.domain.Search
+import com.mosh.songfinder.presentation.ui.activities.SongFinderActivity
 import com.mosh.songfinder.presentation.ui.adapters.SearchAdapter
 import com.mosh.songfinder.presentation.viewmodels.SongViewModel
 import com.mosh.songfinder.presentation.viewmodels.SongViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
+import com.mosh.songfinder.utils.Utils
 
 class SearchListFragment : Fragment() {
 
@@ -36,11 +39,6 @@ class SearchListFragment : Fragment() {
         return binding?.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initView()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -55,27 +53,7 @@ class SearchListFragment : Fragment() {
         })
 
         observeViewModel()
-    }
-
-    private fun initView() {
-        adapterSearch = SearchAdapter(this, listOf())
-        getBinding().rvListSearches.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
-        getBinding().rvListSearches.adapter = adapterSearch
-
-        getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    val action: NavDirections = SearchListFragmentDirections.actionSearchListFragmentToSongListFragment(it)
-                    findNavController().navigate(action)
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(p0: String?): Boolean {
-                return false
-            }
-        })
+        initView()
     }
 
     private fun observeViewModel() {
@@ -88,6 +66,33 @@ class SearchListFragment : Fragment() {
         }
 
         viewModel.getStateLiveData().observe(viewLifecycleOwner, sonObserver)
+    }
+
+    private fun initView() {
+        (requireActivity() as SongFinderActivity).title = "History"
+        adapterSearch = SearchAdapter(this, listOf())
+        getBinding().rvListSearches.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
+        getBinding().rvListSearches.adapter = adapterSearch
+
+        getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (Utils.isConnected(requireContext())) {
+                    query?.let {
+                        val action: NavDirections = SearchListFragmentDirections.actionSearchListFragmentToSongListFragment(it)
+                        findNavController().navigate(action)
+                    }
+                } else {
+                    Toast.makeText(context, "Must be connected to the internet", Toast.LENGTH_LONG).show()
+                }
+
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+        })
     }
 
     private fun drawListSearch(list: List<Search>) {

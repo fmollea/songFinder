@@ -44,7 +44,7 @@ class SongAdapter(
                     currentItem.collectionId)
                 fragment.findNavController().navigate(action)
             } else {
-                Toast.makeText(fragment.context,"Must be connected to the internet", Toast.LENGTH_LONG).show()
+                Toast.makeText(fragment.context, "Must be connected to the internet", Toast.LENGTH_LONG).show()
             }
         }
     }
