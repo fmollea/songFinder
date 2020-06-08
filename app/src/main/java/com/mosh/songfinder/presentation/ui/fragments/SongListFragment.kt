@@ -60,7 +60,7 @@ class SongListFragment : Fragment() {
     }
 
     private fun initView() {
-        adapterSong = SongAdapter(requireActivity().applicationContext, listOf())
+        adapterSong = SongAdapter(this, listOf())
         getBinding().rvListSongs.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSongs.adapter = adapterSong
 
