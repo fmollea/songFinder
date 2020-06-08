@@ -8,5 +8,5 @@
     <dimen name="dimen_ui_16">16dp</dimen>
     <dimen name="dimen_ui_0">0dp</dimen>
     <dimen name="dimen_ui_75">75dp</dimen>
-    <dimen name="dimen_ui_200">200dp</dimen>
+    <dimen name="dimen_ui_250">250dp</dimen>
 </resources>

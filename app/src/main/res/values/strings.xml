@@ -3,4 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="error_ocurred">An error occurred, will try again later</string>
+    <string name="searches_not_found">No saved searches yet, do your first search</string>
+    <string name="retry">Retry</string>
+    <string name="search_history">Search history:</string>
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/searchListFragment">
+    app:startDestination="@id/songListFragment">
     <fragment
         android:id="@+id/songListFragment"
         android:name="com.mosh.songfinder.presentation.ui.fragments.SongListFragment"
@@ -12,14 +12,17 @@
         app:startDestination="@id/action_songListFragment_to_searchListFragment">
         <action
             android:id="@+id/action_songListFragment_to_searchListFragment"
-            app:destination="@id/searchListFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:destination="@id/searchListFragment" />
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue="DEFAULT" />
         <action
             android:id="@+id/action_songListFragment_to_emptyStateFragment"
-            app:destination="@id/emptyStateFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:destination="@id/emptyStateFragment" />
+        <action
+            android:id="@+id/action_songListFragment_to_errorStateFragment"
+            app:destination="@id/errorStateFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchListFragment"
@@ -27,17 +30,35 @@
         android:label="fragment_search_list"
         tools:layout="@layout/fragment_search_list" >
         <action
-            android:id="@+id/action_searchListFragment_to_emptyStateFragment"
-            app:destination="@id/emptyStateFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
-        <action
             android:id="@+id/action_searchListFragment_to_songListFragment"
             app:destination="@id/songListFragment" />
+        <action
+            android:id="@+id/action_searchListFragment_to_emptyStateFragment"
+            app:destination="@id/emptyStateFragment" />
+        <action
+            android:id="@+id/action_searchListFragment_to_errorStateFragment"
+            app:destination="@id/errorStateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/errorStateFragment"
+        android:name="com.mosh.songfinder.presentation.ui.fragments.ErrorStateFragment"
+        android:label="fragment_error_state"
+        tools:layout="@layout/fragment_error_state" >
+        <action
+            android:id="@+id/action_errorStateFragment_to_songListFragment"
+            app:destination="@id/songListFragment" />
+        <argument
+            android:name="query"
+            android:defaultValue="DEFAULT"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/emptyStateFragment"
         android:name="com.mosh.songfinder.presentation.ui.fragments.EmptyStateFragment"
         android:label="fragment_empty_state"
-        tools:layout="@layout/fragment_empty_state" />
+        tools:layout="@layout/fragment_empty_state" >
+        <action
+            android:id="@+id/action_emptyStateFragment_to_songListFragment"
+            app:destination="@id/songListFragment" />
+    </fragment>
 </navigation>

@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mosh.songfinder.R
@@ -38,7 +40,6 @@ class SearchListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -58,9 +59,24 @@ class SearchListFragment : Fragment() {
     }
 
     private fun initView() {
-        adapterSearch = SearchAdapter(listOf())
+        adapterSearch = SearchAdapter(this, listOf())
         getBinding().rvListSearches.layoutManager = LinearLayoutManager(requireActivity().applicationContext)
         getBinding().rvListSearches.adapter = adapterSearch
+
+        getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    val action: NavDirections = SearchListFragmentDirections.actionSearchListFragmentToSongListFragment(it)
+                    findNavController().navigate(action)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                return false
+            }
+        })
     }
 
     private fun observeViewModel() {
@@ -68,7 +84,7 @@ class SearchListFragment : Fragment() {
             when (it) {
                 is SongViewModel.SongViewState.Loading -> showLoading()
                 is SongViewModel.SongViewState.SuccessSearch -> drawListSearch(it.data)
-                is SongViewModel.SongViewState.Error -> navToEmptyState(it.throwable)
+                is SongViewModel.SongViewState.Error -> navToErrorState()
             }
         }
 
@@ -76,14 +92,22 @@ class SearchListFragment : Fragment() {
     }
 
     private fun drawListSearch(list: List<Search>) {
-        adapterSearch.items = list
-        adapterSearch.notifyDataSetChanged()
-        getBinding().rvListSearches.visibility = View.VISIBLE
+        if (list.isEmpty()) {
+            navToEmptyState()
+        } else {
+            adapterSearch.items = list
+            adapterSearch.notifyDataSetChanged()
+            getBinding().rvListSearches.visibility = View.VISIBLE
+        }
         hideLoading()
     }
 
-    private fun navToEmptyState(e: Throwable) {
+    private fun navToEmptyState() {
         findNavController().navigate(R.id.emptyStateFragment)
+    }
+
+    private fun navToErrorState() {
+        findNavController().navigate(R.id.errorStateFragment)
     }
 
     private fun showLoading() {

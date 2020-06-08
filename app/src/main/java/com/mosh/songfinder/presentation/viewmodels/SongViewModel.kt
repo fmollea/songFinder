@@ -35,25 +35,13 @@ class SongViewModel(
     fun insertSongToDB(songs: List<Song>, term: String) {
         viewModelScope.launch(handler) {
             withContext(contextProvider.IO) {
-                songs.forEach {
-                    repository.insertOrUpdateSong(it.toEntity(term))
-                }
+                repository.insertOrUpdateSongAll(songs.map { item -> item.toEntity(term)})
             }
         }
     }
 
-    fun getSongsFromDB(term: String) {
-        stateLiveData.value = SongViewState.Loading
-        viewModelScope.launch(handler) {
-            val data = withContext(contextProvider.IO) {
-                repository.getAllSongBySearchId(term)
-            }
-            stateLiveData.value = SongViewState.SuccessSong(
-                data.value?.map { item -> item.toSong() } ?: emptyList()
-            )
-        }
-    }
-    
+    fun getSongsFromDB(term: String) = repository.getAllSongBySearchId(term)
+
     fun getSearchsFromDB() = repository.getAllSearch()
 
     fun insertSearchToDB(search: Search) {

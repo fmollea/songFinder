@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mosh.songfinder.R
 import com.mosh.songfinder.data.dao.AppDataBase
@@ -21,20 +21,29 @@ import com.mosh.songfinder.presentation.viewmodels.SongViewModel
 import com.mosh.songfinder.presentation.viewmodels.SongViewModelFactory
 import com.mosh.songfinder.presentation.viewmodels.coroutine.CoroutineContextProvider
 import com.mosh.songfinder.utils.Utils
+import androidx.navigation.fragment.findNavController
 
 class SongListFragment : Fragment() {
 
     private lateinit var viewModel : SongViewModel
     private lateinit var adapterSong : SongAdapter
+    private lateinit var query: String
     private var binding : FragmentSongListBinding? = null
     fun getBinding() = binding!!
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        query = arguments?.let {
+            SongListFragmentArgs.fromBundle(it).query
+        } ?: DEFAULT
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSongListBinding.inflate(inflater, container, false)
-        return binding?.root
+        return getBinding().root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -46,8 +55,8 @@ class SongListFragment : Fragment() {
         val factory = SongViewModelFactory(repository, contextProvider)
 
         viewModel = ViewModelProviders.of(this, factory).get(SongViewModel::class.java)
-        initView()
         observeViewModel()
+        initView()
     }
 
     private fun initView() {
@@ -56,8 +65,11 @@ class SongListFragment : Fragment() {
         getBinding().rvListSongs.adapter = adapterSong
 
         getBinding().searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                searchSongs(query)
+            override fun onQueryTextSubmit(term: String?): Boolean {
+                term?.let {
+                    query = it
+                    searchSongs(query)
+                }
                 return true
             }
 
@@ -65,6 +77,21 @@ class SongListFragment : Fragment() {
                 return false
             }
         })
+        getSongs()
+    }
+
+    private fun getSongs() {
+        if (query != DEFAULT) {
+            if (Utils.isConnected(requireActivity().applicationContext)) {
+                viewModel.getSongsFromServer(query)
+            } else {
+                viewModel.getSongsFromDB(query).observe(viewLifecycleOwner, Observer {
+                    drawListSong( it.map { item -> item.toSong() })
+                })
+            }
+        } else {
+            navToSearchList()
+        }
     }
 
     private fun observeViewModel() {
@@ -72,17 +99,15 @@ class SongListFragment : Fragment() {
             when (it) {
                 is SongViewModel.SongViewState.Loading -> showLoading()
                 is SongViewModel.SongViewState.SuccessSong -> drawListSong(it.data)
-                is SongViewModel.SongViewState.Error -> navToEmptyState(it.throwable)
+                is SongViewModel.SongViewState.Error -> navToErrorState(it.throwable)
             }
         }
         viewModel.getStateLiveData().observe(viewLifecycleOwner, sonObserver)
     }
 
-    private fun searchSongs(query: String?) {
-        query?.let {
-            if (it.isNotEmpty()) {
-                viewModel.getSongsFromServer(Utils.obtainTerm(it))
-            }
+    private fun searchSongs(query: String) {
+        if (query.isNotEmpty()) {
+            viewModel.getSongsFromServer(Utils.obtainTerm(query))
         }
     }
 
@@ -96,33 +121,45 @@ class SongListFragment : Fragment() {
     }
 
     private fun drawListSong(list: List<Song>) {
-        saveSearch()
-        adapterSong.items = list
-        adapterSong.notifyDataSetChanged()
+        if (list.isEmpty()) {
+            Toast.makeText(requireActivity().applicationContext, "Songs not found", Toast.LENGTH_LONG).show()
+        } else {
+            saveSearch()
+            adapterSong.items = list
+            adapterSong.notifyDataSetChanged()
+        }
         hideLoading()
         getBinding().rvListSongs.visibility = View.VISIBLE
     }
 
     private fun saveSearch() {
-        val query = getBinding().searchView.query.toString()
         viewModel.insertSearchToDB(Search(query))
         saveSongs(query)
     }
 
     private fun saveSongs(query: String) {
-            viewModel.insertSongToDB(adapterSong.items, query)
+        viewModel.insertSongToDB(adapterSong.items, query)
     }
 
-    private fun navToEmptyState(e: Throwable) {
+    private fun navToErrorState(e: Throwable) {
         if (Utils.isNetworkError(e)) {
             findNavController().navigate(R.id.searchListFragment)
         } else {
-            findNavController().navigate(R.id.emptyStateFragment)
+            val action = SongListFragmentDirections.actionSongListFragmentToErrorStateFragment(query)
+            this.findNavController().navigate(action)
         }
     }
 
+    private fun navToSearchList() {
+        findNavController().navigate(R.id.searchListFragment)
+    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    companion object {
+        private const val DEFAULT = "DEFAULT"
     }
 }

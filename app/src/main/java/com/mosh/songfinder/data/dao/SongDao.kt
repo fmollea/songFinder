@@ -10,6 +10,9 @@ interface SongDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(songEntity: SongEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrUpdateAll(songEntity: List<SongEntity>)
+
     @Query("SELECT * FROM song_db WHERE id = :id")
     fun get(id: Int): LiveData<SongEntity>
 
