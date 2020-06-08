@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.mosh.songfinder.data.repository.CollectionRepository
 import com.mosh.songfinder.data.services.data.CollectionResponse
+import com.mosh.songfinder.presentation.viewmodels.CollectionViewModel.CollectionViewState
 import com.mosh.songfinder.utils.TestContextProvider
 import com.mosh.songfinder.utils.TestCoroutineRules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +42,7 @@ class CollectionViewModelTest {
             repository,
             TestContextProvider()
         ).apply {
-            getStateLiveData.observerForEver(viewStateObserver)
+            getStateLiveData().observeForever(viewStateObserver)
         }
     }
 
@@ -52,22 +53,23 @@ class CollectionViewModelTest {
             val idCollection = 1
 
             `when`(repository.getCollectionFromServer(idCollection)).thenReturn(data)
-            viewModel.getCollectionsFromServer(idCollection)
+            viewModel.getCollectionFromServer(idCollection)
 
-            verify(viewStateObserver).onChanged(CollectionStateView.Loading)
-            verify(viewStateObserver).onChanged(CollectionStateView.SuccessSong(data.body()))
+            verify(viewStateObserver).onChanged(CollectionViewState.Loading)
+            verify(viewStateObserver).onChanged(CollectionViewState.Success(data.body()?.toCollection()))
         }
     }
 
     @Test
     fun `test get collections from server fail`() {
         testCoroutineRule.runBlockingTest {
+            val idCollection = 1
             val error = Error()
-            `when`(repository.getCollectionsFromServer(idCollection)).thenThrow(error)
-            viewModel.getCollectionsFromServer(idCollection)
+            `when`(repository.getCollectionFromServer(idCollection)).thenThrow(error)
+            viewModel.getCollectionFromServer(idCollection)
 
-            verify(viewStateObserver).onChanged(CollectionStateView.Loading)
-            verify(viewStateObserver).onChanged(CollectionStateView.Error(error))
+            verify(viewStateObserver).onChanged(CollectionViewState.Loading)
+            verify(viewStateObserver).onChanged(CollectionViewState.Error(error))
         }
     }
 }

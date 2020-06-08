@@ -1,6 +1,6 @@
 package com.mosh.songfinder.domain
 
-data class Collection(
+data class CollectionSong(
     val collectionName: String,
     val artistName: String,
     val songs: List<Song>,
