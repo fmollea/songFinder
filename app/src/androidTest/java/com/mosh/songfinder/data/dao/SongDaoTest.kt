@@ -54,6 +54,20 @@ class SongDaoTest {
     }
 
     @Test
+    fun testInsertorUpdateAllSongsInDb() {
+        testCoroutineRule.runBlockingTest {
+            var songs = mutableListOf<SongEntity>()
+            for(i in 1..5) {
+                val song = SongEntity(COLLECTION_ID, TERM, ARTIST_NAME, TRACK_NAME, COLLECTION_NAME, PREVIEW_URL, ARTWORKURL_100,
+                    COLLECTION_PRICE, TRACK_PRICE, TRACK_TIME_MILLIS, CURRENCY, PRIMARY_GENRE_NAME, IS_STREAMABLE)
+                songs.add(song)
+            }
+            songDao.insertOrUpdateAll(songs)
+            Assert.assertEquals(songs.size, songDao.getAllSongBySearchId(TERM).size)
+        }
+    }
+
+    @Test
     fun testGetSongsByCollectionId() {
         testCoroutineRule.runBlockingTest {
             for(i in 1..5) {
@@ -62,7 +76,7 @@ class SongDaoTest {
                 songDao.insertOrUpdate(song)
             }
 
-            val list: List<SongEntity>? = LiveDataTestUtil.getValue(songDao.getAllSongBySearchId(TERM))
+            val list: List<SongEntity>? = songDao.getAllSongBySearchId(TERM)
             Assert.assertEquals(5, list!!.size)
         }
     }

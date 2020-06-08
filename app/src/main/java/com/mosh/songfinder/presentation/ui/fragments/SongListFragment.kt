@@ -83,11 +83,9 @@ class SongListFragment : Fragment() {
     private fun getSongs() {
         if (query != DEFAULT) {
             if (Utils.isConnected(requireActivity().applicationContext)) {
-                viewModel.getSongsFromServer(query)
+                viewModel.getSongsFromServer(Utils.obtainTerm(query))
             } else {
-                viewModel.getSongsFromDB(query).observe(viewLifecycleOwner, Observer {
-                    drawListSong( it.map { item -> item.toSong() })
-                })
+                viewModel.getSongsFromDB(query)
             }
         } else {
             navToSearchList()
@@ -124,7 +122,7 @@ class SongListFragment : Fragment() {
         if (list.isEmpty()) {
             Toast.makeText(requireActivity().applicationContext, "Songs not found", Toast.LENGTH_LONG).show()
         } else {
-            saveSearch()
+            saveSearch(list)
             adapterSong.items = list
             adapterSong.notifyDataSetChanged()
         }
@@ -132,13 +130,13 @@ class SongListFragment : Fragment() {
         getBinding().rvListSongs.visibility = View.VISIBLE
     }
 
-    private fun saveSearch() {
+    private fun saveSearch(list: List<Song>) {
         viewModel.insertSearchToDB(Search(query))
-        saveSongs(query)
+        saveSongs(list, query)
     }
 
-    private fun saveSongs(query: String) {
-        viewModel.insertSongToDB(adapterSong.items, query)
+    private fun saveSongs(list: List<Song>, query: String) {
+        viewModel.insertSongToDB(list, query)
     }
 
     private fun navToErrorState(e: Throwable) {
@@ -153,7 +151,7 @@ class SongListFragment : Fragment() {
     private fun navToSearchList() {
         findNavController().navigate(R.id.searchListFragment)
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null

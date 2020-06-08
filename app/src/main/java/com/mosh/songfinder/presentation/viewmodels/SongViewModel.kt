@@ -40,7 +40,17 @@ class SongViewModel(
         }
     }
 
-    fun getSongsFromDB(term: String) = repository.getAllSongBySearchId(term)
+    fun getSongsFromDB(term: String) {
+        stateLiveData.value = SongViewState.Loading
+        viewModelScope.launch(handler) {
+            val data = withContext(contextProvider.IO) {
+                repository.getAllSongBySearchId(term)
+            }
+            stateLiveData.value = SongViewState.SuccessSong(
+                data.map { item -> item.toSong() }
+            )
+        }
+    }
 
     fun getSearchsFromDB() = repository.getAllSearch()
 

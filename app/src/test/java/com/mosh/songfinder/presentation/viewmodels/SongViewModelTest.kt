@@ -80,17 +80,19 @@ class SongViewModelTest {
     }
 
     @Test
-    fun `test get songs from data base succes`() {
+    fun `test get songs from data base success`() {
         testCoroutineRule.runBlockingTest {
-            val data = mock(LiveData::class.java) as LiveData<List<SongEntity>>
+            val songEntity = mock(SongEntity::class.java)
+            val data = listOf<SongEntity>(songEntity, songEntity, songEntity)
             val term = "term"
 
             `when`(repository.getAllSongBySearchId(term)).thenReturn(data)
+            `when`(songEntity.toSong()).thenReturn(mock(Song::class.java))
             viewModel.getSongsFromDB(term)
-            val resulQuery = data.value?.map { item -> item.toSong() } ?: emptyList()
 
             verify(viewStateObserver).onChanged(SongViewState.Loading)
-            verify(viewStateObserver).onChanged(SongViewState.SuccessSong(resulQuery))
+            verify(viewStateObserver).onChanged(SongViewState.SuccessSong(
+                data.map { item -> item.toSong() }))
         }
     }
 
@@ -104,9 +106,8 @@ class SongViewModelTest {
             `when`(song.toEntity(term)).thenReturn(mock(SongEntity::class.java))
 
             viewModel.insertSongToDB(songs, term)
-            songs.forEach {
-                verify(repository, times(3)).insertOrUpdateSong(it.toEntity(term))
-            }
+            verify(repository).insertOrUpdateSongAll(songs.map { item -> item.toEntity(term) })
+
         }
     }
 

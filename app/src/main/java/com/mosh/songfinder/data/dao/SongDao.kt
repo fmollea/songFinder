@@ -17,5 +17,5 @@ interface SongDao {
     fun get(id: Int): LiveData<SongEntity>
 
     @Query("SELECT * FROM song_db WHERE search_term = :term")
-    fun getAllSongBySearchId(term: String): LiveData<List<SongEntity>>
+    suspend fun getAllSongBySearchId(term: String): List<SongEntity>
 }

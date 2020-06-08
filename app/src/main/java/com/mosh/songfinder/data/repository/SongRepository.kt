@@ -23,7 +23,7 @@ class SongRepository(
 
     suspend fun insertOrUpdateSongAll(items: List<SongEntity>) = db.getSongDao().insertOrUpdateAll(items)
 
-    fun getAllSongBySearchId(term: String) = db.getSongDao().getAllSongBySearchId(term)
+    suspend fun getAllSongBySearchId(term: String) = db.getSongDao().getAllSongBySearchId(term)
 
     suspend fun insertOrUpdateSearch(search: SearchEntity) = db.getSearchDao().insertOrUpdate(search)
 
