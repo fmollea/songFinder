@@ -2,6 +2,7 @@
 <resources>
     <dimen name="dimen_ui_40">40dp</dimen>
     <dimen name="text_size">18sp</dimen>
+    <dimen name="text_content_size">22sp</dimen>
     <dimen name="title_size">20sp</dimen>
     <dimen name="body_size">16sp</dimen>
     <dimen name="dimen_ui_8">8dp</dimen>
@@ -11,4 +12,6 @@
     <dimen name="dimen_ui_250">250dp</dimen>
     <dimen name="dimen_ui_150">150dp</dimen>
     <dimen name="dimen_ui_50">50dp</dimen>
+    <dimen name="dimen_ui_124">124dp</dimen>
+    <dimen name="dimen_ui_32">32dp</dimen>
 </resources>

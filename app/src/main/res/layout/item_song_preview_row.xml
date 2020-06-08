@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:elevation="@dimen/dimen_ui_8"
-    android:layout_margin="@dimen/dimen_ui_8">
+    android:layout_margin="@dimen/dimen_ui_8"
+    android:elevation="@dimen/dimen_ui_8">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,12 +25,12 @@
 
         <TextView
             android:id="@+id/tvSongCollection"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dimen_ui_0"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="@dimen/dimen_ui_16"
+            android:layout_marginTop="@dimen/dimen_ui_8"
+            android:layout_marginEnd="@dimen/dimen_ui_8"
+            android:layout_marginBottom="@dimen/dimen_ui_8"
             android:textSize="@dimen/title_size"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

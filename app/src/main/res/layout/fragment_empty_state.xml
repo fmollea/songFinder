@@ -9,12 +9,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvCollection"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dimen_ui_0"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_ui_8"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/dimen_ui_16"
+        android:layout_marginTop="@dimen/dimen_ui_16"
+        android:layout_marginEnd="@dimen/dimen_ui_16"
         android:elevation="@dimen/dimen_ui_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/dimen_ui_50"
             android:queryHint="Search song" />
     </androidx.cardview.widget.CardView>
 
@@ -31,9 +31,9 @@
         android:id="@+id/lottieAnimation"
         android:layout_width="@dimen/dimen_ui_250"
         android:layout_height="@dimen/dimen_ui_250"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="124dp"
+        android:layout_marginStart="@dimen/dimen_ui_16"
+        android:layout_marginEnd="@dimen/dimen_ui_16"
+        android:layout_marginBottom="@dimen/dimen_ui_124"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,14 +44,14 @@
         app:lottie_speed="1" />
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dimen_ui_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="@dimen/dimen_ui_32"
+        android:layout_marginTop="@dimen/dimen_ui_16"
+        android:layout_marginEnd="@dimen/dimen_ui_32"
         android:gravity="center"
         android:text="@string/searches_not_found"
-        android:textSize="22sp"
+        android:textSize="@dimen/text_content_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lottieAnimation" />
